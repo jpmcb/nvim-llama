@@ -1,8 +1,10 @@
 local window = require("nvim-llama.window")
+local settings = require("nvim-llama.settings")
+local llama_cpp = require('nvim-llama.install')
 
-local llama = {}
+local M = {}
 
-llama.interactive_llama = function()
+M.interactive_llama = function()
     local buf, win = window.create_floating_window()
 
     -- Start terminal in the buffer with your binary
@@ -11,10 +13,30 @@ llama.interactive_llama = function()
     end)
 end
 
-vim.cmd [[
-  command! Llama lua require'nvim-llama'.interactive_llama()
-  command! LlamaInstall lua require'nvim-llama.install'.install()
-  command! LlamaRebuild lua require'nvim-llama.rebuild'.rebuild()
-]]
+local function set_commands()
+    vim.api.nvim_create_user_command("Llama", function()
+        M.interactive_llama()
+    end, {})
 
-return llama
+    vim.api.nvim_create_user_command("LlamaInstall", function()
+        llama_cpp.install()
+    end, {})
+
+    vim.api.nvim_create_user_command("LlamaRebuild", function()
+        llama_cpp.rebuild()
+    end, {})
+
+    vim.api.nvim_create_user_command("LlamaUpdate", function()
+        llama_cpp.update()
+    end, {})
+end
+
+function M.setup(config)
+    if config then
+        settings.set(config)
+    end
+
+    set_commands()
+end
+
+return M
