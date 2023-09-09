@@ -6,10 +6,13 @@ local M = {}
 
 M.interactive_llama = function()
     local buf, win = window.create_floating_window()
+    local binary = '~/.local/share/nvim/llama.cpp/main'
+    local llama_flags = '-t 10 -ngl 32 --color -c 4096 --temp 0.7 --repeat_penalty 1.1 -n -1 -i -ins'
+    local model_flag = '-m ~/.local/share/nvim/llama.cpp/models/codellama-13b.Q4_K_M.gguf'
 
     -- Start terminal in the buffer with your binary
     vim.api.nvim_buf_call(buf, function()
-        vim.cmd(string.format('term %s', '~/.local/share/nvim/llama.cpp/main -t 10 -ngl 32 -m ~/.local/share/nvim/llama.cpp/models/codellama-13b.Q4_K_M.gguf --color -c 4096 --temp 0.7 --repeat_penalty 1.1 -n -1 -i -ins'))
+        vim.cmd(string.format('term %s %s %s', binary, llama_flags, model_flag))
     end)
 end
 
