@@ -2,7 +2,19 @@
 
 _[Llama 2](https://ai.meta.com/llama/) and [llama.cpp](https://github.com/ggerganov/llama.cpp/) interfaces for Neovim_
 
+# Project status
+
 🏗️ 👷 Warning! Under active development!! 👷 🚧
+
+This plugin was created as a proof of concept plugin for running large language model technology within Neovim on consumer hardware.
+Using llama.cpp and a downloaded model showed that this goal is indeed possible.
+
+But distributing, building, maintaining, and running a large C/C++ project (llama.cpp) is abit out of scope of what makes sense for a liteweight nvim plugin.
+
+Therefore, this project will be transitiion to use Ollama, a llama.cpp runner in docker.
+Ideally, this means that all you'll need to run nvim-llama is docker!
+
+You can expect these changes in Q1 2024.
 
 # Installation
 
