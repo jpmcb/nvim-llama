@@ -1,6 +1,6 @@
 # 🦙 nvim-llama
 
-_[Ollama](https://github.com/jmorganca/ollama) interfaces for Neovim_
+_[Ollama](https://github.com/jmorganca/ollama) interfaces for Neovim: get up and running with large language models locally in Neovim._
 
 https://github.com/jpmcb/nvim-llama/assets/23109390/3e9e7248-dcf4-4349-8ee2-fd87ac3838ca
 
