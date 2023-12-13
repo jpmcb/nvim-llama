@@ -1,42 +1,111 @@
 local window = require("nvim-llama.window")
 local settings = require("nvim-llama.settings")
-local llama_cpp = require('nvim-llama.install')
+local ollama = require('nvim-llama.ollama')
 
 local M = {}
 
 M.interactive_llama = function()
-    local buf, win = window.create_floating_window()
-    local binary = '~/.local/share/nvim/llama.cpp/main'
-    local llama_flags = '-t 10 -ngl 32 --color -c 4096 --temp 0.7 --repeat_penalty 1.1 -n -1 -i -ins'
-    local model_flag = '-m ~/.local/share/nvim/llama.cpp/models/codellama-13b.Q4_K_M.gguf'
+    local command = ollama.run(settings.current.model)
 
-    -- Start terminal in the buffer with your binary
-    vim.api.nvim_buf_call(buf, function()
-        vim.cmd(string.format('term %s %s %s', binary, llama_flags, model_flag))
-    end)
+    window.create_chat_window()
+    vim.fn.termopen(command)
+end
+
+local function trim(s)
+    return s:match('^%s*(.-)%s*$')
 end
 
 local function set_commands()
     vim.api.nvim_create_user_command("Llama", function()
         M.interactive_llama()
     end, {})
+end
 
-    vim.api.nvim_create_user_command("LlamaInstall", function()
-        llama_cpp.install()
-    end, {})
+local function is_docker_installed()
+    local handle = io.popen("docker --version 2>&1")
+    local result = handle:read("*a")
+    handle:close()
 
-    vim.api.nvim_create_user_command("LlamaRebuild", function()
-        llama_cpp.rebuild()
-    end, {})
+    return result:match("Docker version")
+end
 
-    vim.api.nvim_create_user_command("LlamaUpdate", function()
-        llama_cpp.update()
-    end, {})
+local function is_docker_running()
+    local handle = io.popen("docker info > /dev/null 2>&1; echo $?")
+    local result = handle:read("*a")
+    handle:close()
+
+    return result:match("0\n")
+end
+
+local function check_docker()
+    if not is_docker_installed() then
+        error("Docker is not installed. Docker is required for nvim-llama")
+        return false
+    end
+
+    if not is_docker_running() then
+        error("Docker is not running. ")
+        return false
+    end
+
+    return true
+end
+
+local function async(command, args, callback)
+    vim.loop.spawn(command, {args = args}, function(code)
+        if code == 0 then
+            callback(true)
+        else
+            callback(false)
+        end
+    end)
+end
+
+local function is_container_running()
+    local command = string.format("docker ps --filter 'name=^/nvim-llama$' --format '{{.Names}}'")
+    local handle = io.popen(command)
+    local result = trim(handle:read("*a"))
+    handle:close()
+
+    return result == "nvim-llama"
+end
+
+local function check_ollama_container()
+    local container_name = "nvim-llama"
+
+    local exists_command = string.format("docker ps -a --filter 'name=^/nvim-llama$' --format '{{.Names}}'")
+    local exists_handle = io.popen(exists_command)
+    local exists_result = trim(exists_handle:read("*a"))
+    exists_handle:close()
+
+    if exists_result == "nvim-llama" then
+        if not is_container_running() then
+            -- Remove the stopped container and re-run a new one
+            local handle = io.popen("docker rm " .. container_name)
+            handle:close()
+            ollama.start()
+        end
+    else
+        -- start a new container as non by name exists
+        ollama.start()
+    end
+
+    return true
 end
 
 function M.setup(config)
     if config then
         settings.set(config)
+    end
+
+    local status, err = pcall(check_docker)
+    if not status then
+        print("Error checking docker status: " .. err)
+    end
+
+    status, err = pcall(check_ollama_container)
+    if not status then
+        print("Error checking docker status: " .. err)
     end
 
     set_commands()

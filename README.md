@@ -1,20 +1,17 @@
 # 🦙 nvim-llama
 
-_[Llama 2](https://ai.meta.com/llama/) and [llama.cpp](https://github.com/ggerganov/llama.cpp/) interfaces for Neovim_
+_[Ollama](https://github.com/jmorganca/ollama) interfaces for Neovim_
 
 # Project status
 
 🏗️ 👷 Warning! Under active development!! 👷 🚧
 
-This plugin was created as a proof of concept plugin for running large language model technology within Neovim on consumer hardware.
-Using llama.cpp and a downloaded model showed that this goal is indeed possible.
+# Requirements
 
-But distributing, building, maintaining, and running a large C/C++ project (llama.cpp) is abit out of scope of what makes sense for a liteweight nvim plugin.
+Docker is required to use `nvim-llama`.
 
-Therefore, this project will be transitiion to use Ollama, a llama.cpp runner in docker.
-Ideally, this means that all you'll need to run nvim-llama is docker!
-
-You can expect these changes in Q1 2024.
+And that's it! All models and clients run from within Docker to provide chat interfaces and functionality.
+This is an agnostic approach that works for MacOS, Linux, and Windows.
 
 # Installation
 
@@ -55,44 +52,35 @@ local defaults = {
     -- See plugin debugging logs
     debug = false,
 
-    -- Build llama.cpp for GPU acceleration on Apple M chip devices.
-    -- If you are using an Apple M1/M2 laptop, it is highly recommended to
-    -- use this since, depending on the model, may drastically increase performance.
-    build_metal = false,
+    -- The model for ollama to use. This model will be automatically downloaded.
+    model = llama2,
 }
 ```
 
-# Models
 
-Llama.cpp supports an incredible number of models.
+### Model library
 
-To start using one, you'll need to download an appropriately sized model that
-is supported by llama.cpp.
+Ollama supports an incredible number of open-source models available on [ollama.ai/library](https://ollama.ai/library 'ollama model library')
 
-The 13B GGUF CodeLlama model is a really good place to start:
-https://huggingface.co/TheBloke/CodeLlama-13B-GGUF
+Check out their docs to learn more: https://github.com/jmorganca/ollama
 
-In order to use a model, it must be in the `llama.cpp/models/` directory which
-is expected to be found at `~/.local/share/llama.cpp/models`.
+---
 
-The following script can be useful for downloading a model to that directory:
+When setting the `model` setting, the specified model will be automatically downloaded:
 
-```sh
-LLAMA_CPP="~/.local/share/nvim/llama.cpp"
-MODEL="codellama-13b.Q4_K_M.gguf"
+| Model              | Parameters | Size  | Model setting |
+| ------------------ | ---------- | ----- | ------------------------------ |
+| Neural Chat        | 7B         | 4.1GB | `model = neural-chat`       |
+| Starling           | 7B         | 4.1GB | `model = starling-lm`       |
+| Mistral            | 7B         | 4.1GB | `model = mistral`           |
+| Llama 2            | 7B         | 3.8GB | `model = llama2`            |
+| Code Llama         | 7B         | 3.8GB | `model = codellama`         |
+| Llama 2 Uncensored | 7B         | 3.8GB | `model = llama2-uncensored` |
+| Llama 2 13B        | 13B        | 7.3GB | `model = llama2:13b`        |
+| Llama 2 70B        | 70B        | 39GB  | `model = llama2:70b`        |
+| Orca Mini          | 3B         | 1.9GB | `model = orca-mini`         |
+| Vicuna             | 7B         | 3.8GB | `model = vicuna`            |
 
-pushd "${LLAMA_CPP}"
-    if [ ! -f models/${MODEL} ]; then
-        curl -L "https://huggingface.co/TheBloke/CodeLlama-13B-GGUF/resolve/main/${MODEL}" -o models/${MODEL}
-    fi
-popd
-```
+> Note: You should have at least 8 GB of RAM to run the 3B models, 16 GB to run the 7B models, and 32 GB to run the 13B models.
+70B parameter models require upwards of 64 GB of ram (if not more).
 
-In the future, this project may provide the capability to download models automatically.
-
-# License
-
-This project is dual licensed under [MIT](./LICENSE.txt) (first party plugin code)
-and the [Llama 2 license](./LICENSE.llama.txt).
-By using this plugin, you agree to both terms and assert you have already have
-[your own non-transferable license for Llama 2 from Meta AI](https://ai.meta.com/resources/models-and-libraries/llama-downloads/).

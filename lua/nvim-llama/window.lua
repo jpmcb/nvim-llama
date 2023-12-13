@@ -1,24 +1,19 @@
 local M = {}
 
-M.create_floating_window = function ()
-    local width = math.floor(vim.o.columns * 0.6)
-    local height = math.floor(vim.o.lines * 0.8)
+M.create_chat_window = function ()
+    -- Split the window vertically and set size
+    vim.cmd("vsplit")
+    vim.cmd("vertical resize 80")
 
-    local row = math.floor((vim.o.lines - height) * 0.5)
-    local col = math.floor((vim.o.columns - width) * 0.5)
-
+    -- Open a new buffer in the split window
     local buf = vim.api.nvim_create_buf(false, true)
-    local win = vim.api.nvim_open_win(buf, true, {
-        relative = 'editor',
-        width = width,
-        height = height,
-        row = row,
-        col = col,
-        style = 'minimal'
-    })
+    vim.api.nvim_win_set_buf(0, buf)
 
-    return buf, win
+    -- Set a few options for the new buffer
+    vim.api.nvim_win_set_option(0, 'number', false)
+    vim.api.nvim_win_set_option(0, 'relativenumber', false)
+
+    return buf
 end
 
 return M
-
