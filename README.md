@@ -2,6 +2,8 @@
 
 _[Ollama](https://github.com/jmorganca/ollama) interfaces for Neovim_
 
+https://github.com/jpmcb/nvim-llama/assets/23109390/3e9e7248-dcf4-4349-8ee2-fd87ac3838ca
+
 # Project status
 
 🏗️ 👷 Warning! Under active development!! 👷 🚧
@@ -20,7 +22,7 @@ Use your favorite package manager to install the plugin:
 ### Packer
 
 ```lua
-  use 'jpmcb/nvim-llama'
+use 'jpmcb/nvim-llama'
 ```
 
 ### lazy.nvim
@@ -56,7 +58,6 @@ local defaults = {
     model = llama2,
 }
 ```
-
 
 ### Model library
 
