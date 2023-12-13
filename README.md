@@ -4,18 +4,16 @@ _[Ollama](https://github.com/jmorganca/ollama) interfaces for Neovim: get up and
 
 https://github.com/jpmcb/nvim-llama/assets/23109390/3e9e7248-dcf4-4349-8ee2-fd87ac3838ca
 
-# Project status
-
 🏗️ 👷 Warning! Under active development!! 👷 🚧
 
-# Requirements
+## Requirements
 
 Docker is required to use `nvim-llama`.
 
 And that's it! All models and clients run from within Docker to provide chat interfaces and functionality.
 This is an agnostic approach that works for MacOS, Linux, and Windows.
 
-# Installation
+## Installation
 
 Use your favorite package manager to install the plugin:
 
@@ -39,7 +37,7 @@ use 'jpmcb/nvim-llama'
 Plug 'jpmcb/nvim-llama'
 ```
 
-# Setup & configuration
+## Setup & configuration
 
 In your `init.vim`, setup the plugin:
 
@@ -85,3 +83,8 @@ When setting the `model` setting, the specified model will be automatically down
 > Note: You should have at least 8 GB of RAM to run the 3B models, 16 GB to run the 7B models, and 32 GB to run the 13B models.
 70B parameter models require upwards of 64 GB of ram (if not more).
 
+## Usage
+
+The `:Llama` autocommand opens a `Terminal` window where you can start chatting with your LLM.
+
+To exit `Terminal` mode, which by default locks the focus to the terminal buffer, use the bindings `Ctrl-\ Ctrl-n`
