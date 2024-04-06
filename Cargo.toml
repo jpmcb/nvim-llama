@@ -1,5 +1,21 @@
 [workspace]
 members = [
-    "embedctl",
-    "ollamactl",
+    "lib/cli",
+    "lib/constants",
+    "lib/embeddings",
+    "lib/ollama",
+    "lib/prompting",
+    "lib/qdrant",
+    "lib/openai",
+    "lib/utils",
 ]
+resolver = "2"
+
+[workspace.package]
+authors = ["John McBride"]
+edition = "2021"
+homepage = "https://github.com/jpmcb/nvim-llama"
+license = "MIT"
+repository = "https://github.com/jpmcb/nvim-llama"
+rust-version = "1.74"
+version = "0.1.0"

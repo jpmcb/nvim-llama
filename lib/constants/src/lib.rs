@@ -1,4 +1,5 @@
-pub const VERSION: &str = "v0.1.0";
+// CLI util metadata
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const AUTHOR: &str = "jpmcb";
 
 // Qdrant default configs

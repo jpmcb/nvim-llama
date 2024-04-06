@@ -1,0 +1,21 @@
+[package]
+name = "nvim-llama-openai-client"
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+nvim-llama-prompting = { version = "0.1", path = "../prompting" }
+nvim-llama-constants = { version = "0.1", path = "../constants" }
+nvim-llama-utils = { version = "0.1", path = "../utils" }
+
+anyhow = { version = "1.0" }
+serde = "1"
+tinytemplate = "1.1"
+ollama-rs = { version = "0.1", path = "../../../pepperoni21-ollama-rs"}
+openai-api-rs = "4.0.8"
+

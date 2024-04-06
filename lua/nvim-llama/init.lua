@@ -110,7 +110,7 @@ function M.setup(config)
 	end
 
 	set_commands()
-	ollamactl.setCommand()
+	ollamactl.setup()
 end
 
 return M
