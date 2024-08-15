@@ -51,10 +51,16 @@ You can provide the following optional configuration table to the `setup` functi
 local defaults = {
     -- See plugin debugging logs
     debug = false,
+    -- New settings to allow a bit more of customization, and checking if ollama is run via docker or if its installed in the local system
+    docker = true,
+    ollama_host = "localhost",
+    ollama_port = "11434",
 
     -- The model for ollama to use. This model will be automatically downloaded.
     model = llama2,
 }
+-- can also set a keymap to open ollama
+vim.keymap.set("n", "<leader>co","<cmd>Llama<CR>")
 ```
 
 ### Model library
