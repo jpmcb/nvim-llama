@@ -126,8 +126,8 @@ function M.setup(config)
     if not status then
         print("Ollama doesnt seem to be running: " .. err)
     end
-    set_commands()
   end
+    set_commands()
 end
 
 return M
