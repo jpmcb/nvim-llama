@@ -1,0 +1,24 @@
+[project]
+name = "nvim-llama-backend"
+version = "0.0.1"
+description = "The nvim-llama backend"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+dependencies = [
+    "fastapi>=0.115.11",
+    "langchain-google-genai>=2.0.11",
+    "langchain>=0.3.20",
+    "uvicorn>=0.34.0",
+    "sqlalchemy>=2.0.38",
+    "psycopg2-binary>=2.9.10",
+    "pgvector>=0.3.6",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.10.6",
+    "tiktoken>=0.9.0",
+    "python-multipart>=0.0.20",
+    "ruff>=0.9.10",
+    "loguru>=0.7.3",
+    "langchain-community>=0.3.19",
+    "pytest>=8.3.5",
+]

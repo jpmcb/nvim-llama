@@ -1,0 +1,1 @@
+VECTOR_DIMS = 1024

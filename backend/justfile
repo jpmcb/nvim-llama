@@ -1,0 +1,52 @@
+# =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=
+#
+# Run & build
+
+run:
+  uv run -m src.main
+
+# =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=
+#
+# Project onboarding
+
+create-venv:
+  uv venv
+
+install-deps:
+  uv sync
+
+# =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=
+#
+# Dev commands
+
+format:
+  uv run ruff format ./src ./tests
+
+# =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=   =^..^=
+#
+# local development and testing
+
+test-setup:
+  docker run \
+    -e POSTGRES_USER=neovim \
+    -e POSTGRES_PASSWORD=neovim \
+    -e POSTGRES_DB=nvim-llama \
+    --name nvim-llama \
+    -p 5432:5432 \
+    -d ankane/pgvector
+
+  # abit of a hack: sleep to allow for docker postgres to come up
+  sleep 3
+
+integration-test:
+  DATABASE_URL="postgresql://neovim:neovim@localhost:5432/nvim-llama" \
+  uv run -m pytest tests/integration
+
+unit-test:
+  uv run -m pytest tests/unit
+
+test-teardown:
+  docker stop nvim-llama
+  docker rm nvim-llama
+
+test: test-setup unit-test integration-test test-teardown
