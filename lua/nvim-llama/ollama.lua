@@ -38,26 +38,50 @@ function M.restart()
     if err then
         error("Failed to restart Ollama container: " .. err)
     end
+  return result
 end
 
-function M.start()
+function M.start(docker,ollama_host,ollama_port)
+  if docker == true then
     M.prepare()
-    local start_command = "docker run -d -p 11434:11434 -v " .. home .. "/.ollama:/root/.ollama --name nvim-llama ollama/ollama"
+    local start_command = "docker run -d -p" .. ollama_port .. ":11434 -v " .. home .. "/.ollama:/root/.ollama --name nvim-llama ollama/ollama"
     local handle, err = io.popen(start_command)
     local result = handle:read("*a")
     handle:close()
-
     if err then
         error("Failed to start Ollama container: " .. err)
     end
+    return result
+  end
+  if docker == false then
+    is_started = "curl " .. "http://" .. ollama_host ":" .. ollama_port
+    local _, err = io.popen(is_started)
+    if err ~= nil then
+      error("Failed to get to the ollama_endpoint")
+    end
+
+  end
+  end
+
+function M.run(model,docker)
+  if docker == true  then
+    cmd ="docker exec -it nvim-llama ollama run " .. model
+    return cmd
+  end
+  if docker == false then
+    cmd ="ollama run " .. model
+    return cmd
+  end
+  return cmd
 end
 
-function M.run(model)
-    return "docker exec -it nvim-llama ollama run " .. model
-end
-
-function M.list()
+function M.list(docker)
+  if docker == true then
     return "docker exec -it nvim-llama ollama list"
+  end
+  if docker == false then
+    return "ollama list"
+  end
 end
 
 return M

@@ -20,22 +20,33 @@ local function set_commands()
         M.interactive_llama()
     end, {})
 end
-
 local function is_docker_installed()
     local handle = io.popen("docker --version 2>&1")
     local result = handle:read("*a")
     handle:close()
-
     return result:match("Docker version")
+end
+local function is_ollama_installed()
+if settings.docker == false then
+    local handle = io.popen("ollama --version 2>&1")
+    local result = handle:read("*a")
+    handle:close()
+    return result:match("ollama version")
+  end
 end
 
 local function is_docker_running()
+  if settings.docker == true then
     local handle = io.popen("docker info > /dev/null 2>&1; echo $?")
     local result = handle:read("*a")
     handle:close()
 
     return result:match("0\n")
-end
+    end
+  if settings.docker == false then
+    return true
+  end
+  end
 
 local function check_docker()
     if not is_docker_installed() then
@@ -51,16 +62,6 @@ local function check_docker()
     return true
 end
 
-local function async(command, args, callback)
-    vim.loop.spawn(command, {args = args}, function(code)
-        if code == 0 then
-            callback(true)
-        else
-            callback(false)
-        end
-    end)
-end
-
 local function is_container_running()
     local command = string.format("docker ps --filter 'name=^/nvim-llama$' --format '{{.Names}}'")
     local handle = io.popen(command)
@@ -69,6 +70,13 @@ local function is_container_running()
 
     return result == "nvim-llama"
 end
+local function is_ollama_running()
+  local command = string.format("curl http://" .. settings.ollama_host .. ":" .. settings.ollama_port)
+  local handle = io.popen(command)
+  local result = trim(handle:read("*a"))
+  handle:close()
+  return result:match("Ollama is running")
+  end
 
 local function check_ollama_container()
     local container_name = "nvim-llama"
@@ -98,6 +106,7 @@ function M.setup(config)
         settings.set(config)
     end
 
+    if settings.docker == true then
     local status, err = pcall(check_docker)
     if not status then
         print("Error checking docker status: " .. err)
@@ -107,7 +116,17 @@ function M.setup(config)
     if not status then
         print("Error checking docker status: " .. err)
     end
-
+  end
+  if settings.docker == false then
+    local status, err = pcall(is_ollama_installed)
+    if not status then
+      print("Ollama doesnt seem to be installed" .. err)
+    end
+    status, err = pcall(is_ollama_running)
+    if not status then
+        print("Ollama doesnt seem to be running: " .. err)
+    end
+  end
     set_commands()
 end
 
